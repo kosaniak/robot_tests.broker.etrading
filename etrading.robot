@@ -814,10 +814,6 @@ Login
     Execute Javascript          $('#submit_bid_disqualify_form_${award_num}').click();
     Wait Until Page Contains   Учасника дискваліфіковано   30
 
-Завантажити документ рішення кваліфікаційної комісії
-    [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
-    etrading.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
-
 Відповісти на запитання
     [Arguments]  ${username}  ${tender_uaid}  ${answer_data}  ${question_id}
     ${index}=   Get Element Attribute   xpath=//div[contains(text(), '${question_id}')]@id
@@ -985,10 +981,6 @@ Login
   Click Element           id=fileeditform_submit
   sleep  2
   Click Element           id=submit_cansel_form
-
-Завантажити угоду до тендера
-    [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
-    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
 
 Завантажити протокол аукціону в авард
     [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
