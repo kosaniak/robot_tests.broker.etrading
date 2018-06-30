@@ -1459,6 +1459,10 @@ Login
     ...  ELSE IF    'registrationFee' in '${fieldname}'  Convert To Number  ${return_value}
     ...  ELSE       Convert to string  ${return_value}
 
+    ${return_value}=  Run Keyword If
+    ...  'rectificationPeriod.endDate' in '${fieldname}'  add_timezone_to_contact_date  ${return_value}
+    ...  ELSE       Convert to string  ${return_value}
+
     [Return]  ${return_value}
 
 Отримати інформацію з активу лоту
@@ -1481,6 +1485,10 @@ Login
     ...  ELSE IF    'minimalStep' in '${fieldname}'  Convert To Number  ${return_value}
     ...  ELSE IF    'guarantee' in '${fieldname}'  Convert To Number  ${return_value}
     ...  ELSE IF    'registrationFee' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE       Convert to string  ${return_value}
+
+    ${return_value}=  Run Keyword If
+    ...  'rectificationPeriod.endDate' in '${fieldname}'  add_timezone_to_contact_date  ${return_value}
     ...  ELSE       Convert to string  ${return_value}
 
     [Return]  ${return_value}
@@ -1657,4 +1665,6 @@ wait with reload
     \    Exit For Loop If    ${test}
     \    reload page
 
-
+Активувати процедуру
+    [Arguments]  ${username}  ${tender_uaid}
+    etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}

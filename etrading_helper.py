@@ -28,7 +28,7 @@ def convert_contract_date_to_iso(date_time_from_ui, i):
     return new_date_time_string
 
 def add_timezone_to_contact_date(date_str):
-    timezone="+02:00"
+    timezone="+03:00"
     return date_str+timezone
 
 def etrading_download_file(url, file_name, output_dir):
@@ -81,6 +81,7 @@ def convert_etrading_lot_string(string):
             u'Реєстрацію завершено':             'complete',
             u'Перевірка коректності оголошення': 'verification',
             u'Об’єкт виключено':                 'deleted',
+            u'Аукціон':                          'active.auction',
             }
     return data.get(string, string)
 
