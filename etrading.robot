@@ -1008,6 +1008,7 @@ Login
     [Documentation]
     ...      [Призначення] Створює об’єкт МП з початковими даними tender_data
     ...      [Повертає] tender_uaid (ідентифікатор новоствореного об’єкта МП)
+    log to console  ${tender_data}
     Click Element    id=assets_btn
     Sleep   5
     Click Element    id=addassetsbtn
@@ -1160,9 +1161,9 @@ Login
     Input text      id=addassetitemform-0-address_region       ${items_0_address_region}
     Input text      id=addassetitemform-0-address_streetaddress       ${items_0_address_streetAddress}
 
-    Execute Javascript    $("#addassetitemform-0-classification_id").val("${items_0_classification_id}"); $("#addassetitemform-0-classification_id").trigger("change");
-    Execute Javascript    $("#addassetitemform-0-classification_id_cpv").val("${items_0_additionalClassifications_0_id}"); $("#addassetitemform-0-classification_id_cpv").trigger("change");
-
+    Input text      id=addassetitemform-0-classification_id       ${items_0_classification_id}
+    Sleep   5
+    Execute Javascript    $("#treewrap_SP_0").trigger("click");
     Sleep   5
     Click Element   xpath=//button[contains(@id, 'save_asset')]
     Wait Until Element Is Visible       xpath=//td[contains(@id, 'info_assetID')]   30
