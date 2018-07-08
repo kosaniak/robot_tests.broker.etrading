@@ -75,13 +75,20 @@ def convert_etrading_string(string):
 def convert_etrading_lot_string(string):
     data = {
             u'Опубліковано':                     'pending',
-            u'Англійський аукціон':              'sellout.english',
-            u'Голландський аукціон':             'sellout.insider',
+            u'Аукціон в стадії проведення':      'active',
             u'Аукціон заплановано':              'scheduled',
             u'Реєстрацію завершено':             'complete',
             u'Перевірка коректності оголошення': 'verification',
             u'Об’єкт виключено':                 'deleted',
             u'Аукціон':                          'active.auction',
+            }
+    return data.get(string, string)
+
+def convert_etrading_lot_auction_string(string):
+    data = {
+            u'Аукціон':                                                                                         'sellout.english',
+            u'Аукціон із зниженням стартової ціни':                                                             'sellout.english',
+            u'Аукціон за методом покрокового зниження стартової ціни та подальшого подання цінових пропозицій': 'sellout.insider',
             }
     return data.get(string, string)
 

@@ -1401,7 +1401,7 @@ Login
     ${decisions_0_decisionDate}=     Convert To String       ${decisions_0_decisionDate}
     ${decisions_0_decisionID}=       Convert To String       ${decisions_0_decisionID}
 
-    Input text      id=addlotform-asset_id                   ${asset_id}
+    Execute Javascript    $("#addlotform-asset_id").val("${asset_id}"); $("#addlotform-asset_id").trigger("change");
     Input text      id=addassetdecisionsform-0-title         ${asset_uaid}
     Input text      id=addassetdecisionsform-0-decisiondate  ${asset_uaid}
     Input text      id=addassetdecisionsform-0-decisionid    ${asset_uaid}
@@ -1449,15 +1449,15 @@ Login
     ${return_value}=  Run Keyword If
     ...  'status' in '${fieldname}'                                   convert_etrading_lot_string  ${return_value}
     ...  ELSE IF    'registrationDetails.status' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
-    ...  ELSE IF    'procurementMethodType' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
+    ...  ELSE IF    'procurementMethodType' in '${fieldname}'    convert_etrading_lot_auction_string  ${return_value}
     ...  ELSE IF    'rectificationPeriod.endDate' in '${fieldname}'  convert_etrading_date_to_iso_format  ${return_value}
     ...  ELSE IF    'auctionPeriod' in '${fieldname}'  convert_etrading_date_to_iso_format  ${return_value}
-    ...  ELSE IF    'quantity' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'tenderAttempts' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'value' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'minimalStep' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'guarantee' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'registrationFee' in '${fieldname}'  Convert To Number  ${return_value}
+    ##...  ELSE IF    'quantity' in '${fieldname}'  Convert To Number  ${return_value}
+    ##...  ELSE IF    'tenderAttempts' in '${fieldname}'  Convert To Integer  ${return_value}
+    ##...  ELSE IF    'value' in '${fieldname}'  Convert To Number  ${return_value}
+    ##...  ELSE IF    'minimalStep' in '${fieldname}'  Convert To Number  ${return_value}
+    ##...  ELSE IF    'guarantee' in '${fieldname}'  Convert To Number  ${return_value}
+    ##...  ELSE IF    'registrationFee' in '${fieldname}'  Convert To Number  ${return_value}
     ...  ELSE       Convert to string  ${return_value}
 
     ${return_value}=  Run Keyword If
@@ -1472,7 +1472,7 @@ Login
     ...      [Призначення] Отримує значення поля field_name з активу з item_id в описі лоту tender_uaid.
     ...      [Повертає] item['field_name'] (значення поля).
 
-    ${return_value}=   Get Text  ${lotitemlocator.${fieldname}}
+    ${return_value}=   Get Text  ${lotlocator.${fieldname}}
 
     ${return_value}=  Run Keyword If
     ...  'status' in '${fieldname}'                                   convert_etrading_lot_string  ${return_value}
@@ -1587,7 +1587,6 @@ Login
     etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible      id=info_status    30
     Click Element  id=update_lot_btn
-    Wait Until Element Is Visible      id=addlotform-asset_id    30
     ${auctionPeriod.startDate}=             Get From Dictionary      ${auction.auctionPeriod}    startDate
     ${guarantee.amount}=                    Get From Dictionary      ${auction.guarantee}        amount
     ${minimalStep.amount}=                  Get From Dictionary      ${auction.minimalStep}      amount
@@ -1610,10 +1609,7 @@ Login
 
 Додати умови проведення аукціону для індексу 1
     [Arguments]  ${username}  ${auction}  ${auction_index}  ${tender_uaid}
-    Input text    addlotauctionform-1-tenderingduration_y    ${EMPTY}
-    Input text    addlotauctionform-1-tenderingduration_m    ${EMPTY}
-    Input text    addlotauctionform-1-tenderingduration_w    1
-    Input text    addlotauctionform-1-tenderingduration_d    ${EMPTY}
+    Input text    addlotauctionform-1-tenderingduration_d    30
     Click Element  id=publish_lot
     Wait Until Element Is Visible      id=info_status    30
 
