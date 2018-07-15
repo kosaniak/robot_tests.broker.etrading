@@ -20,6 +20,12 @@ def convert_etrading_date_to_iso_format(date_time_from_ui):
     new_date_time_string = new_timedata.strftime("%Y-%m-%d %H:%M:%S.%f")
     return new_date_time_string
 
+def convert_etrading_date_to_iso_format_with_tz(date_time_from_ui):
+    new_timedata = datetime.strptime(date_time_from_ui, '%d-%m-%Y\n%H:%M')
+    new_date_time_string = new_timedata.strftime("%Y-%m-%d %H:%M:%S.%f")
+    return add_timezone_to_contact_date(new_date_time_string)
+
+
 def convert_contract_date_to_iso(date_time_from_ui, i):
     res=date_time_from_ui.split(' - ')
     res=res[i]
