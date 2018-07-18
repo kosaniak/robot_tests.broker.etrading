@@ -1515,7 +1515,6 @@ Login
     etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible      id=info_status    30
     Click Element  id=update_lot_btn
-    Wait Until Element Is Visible      id=addlotform-asset_id    30
     ${prop_field_name}=         Replace String    ${fieldname}    .   _    count=1
     Wait Until Element Is Visible       name=AddLotForm[${prop_field_name}]   30
     ${field_value}=  Convert To String  ${fieldvalue}
