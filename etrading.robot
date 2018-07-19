@@ -1529,7 +1529,6 @@ Login
     etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible      id=info_status    30
     Click Element  id=update_lot_btn
-    Wait Until Element Is Visible      id=addlotform-asset_id    30
     ${prop_field_name}=         Replace String    ${fieldname}    .   _    count=1
     Wait Until Element Is Visible       name=AddAssetItemForm[0][${prop_field_name}]   30
     ${field_value}=  Convert To String  ${fieldvalue}
@@ -1557,10 +1556,9 @@ Login
     ...      [Повертає] reply (словник з інформацією про документ).
     etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
     Click Element  id=update_lot_btn
-    Wait Until Element Is Visible      id=addlotform-asset_id    30
-    Sleep   2
+    Sleep   5
     Choose File     id=doc_upload_field_${documentType}   ${filepath}
-    Sleep   10
+    Sleep   5
     Click Element  id=save_lot
     Wait Until Element Is Visible    id=docuploadsuccess  120
     Click Element  id=docuploadsuccess
@@ -1659,8 +1657,7 @@ Login
     ...      [Повертає] reply (словник з інформацією про документ).
     etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
     Click Element  id=update_lot_btn
-    Wait Until Element Is Visible      id=addlotform-asset_id    30
-    Sleep   2
+    Sleep   5
     Choose File     xpath=//input[contains(@id, 'lot_auctions_doc_upload_field_${auction_index}_${documentType}')]   ${filepath}
     Sleep   10
     Click Element  id=save_lot
