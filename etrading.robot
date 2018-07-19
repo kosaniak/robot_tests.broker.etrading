@@ -1516,7 +1516,7 @@ Login
     Wait Until Element Is Visible      id=info_status    30
     Click Element  id=update_lot_btn
     ${prop_field_name}=         Replace String    ${fieldname}    .   _    count=1
-    Wait Until Element Is Visible       name=AddLotForm[${prop_field_name}]   30
+    Wait Until Element Is Visible       name=AddLotForm['${prop_field_name}']   30
     ${field_value}=  Convert To String  ${fieldvalue}
     Input text  name=AddLotForm[${prop_field_name}]  ${fieldvalue}
     Click Element  id=save_lot
@@ -1542,9 +1542,7 @@ Login
     ...      [Призначення] Завантажує ілюстрацію, яка знаходиться по шляху filepath і має documentType = illustration, до лоту tender_uaid користувачем username.
     etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
     Click Element  id=update_lot_btn
-    Wait Until Element Is Visible      id=addlotform-asset_id    30
-
-    Sleep   2
+    Sleep   5
     Choose File     xpath=//input[contains(@id, "doc_upload_field_illustration")]   ${filepath}
     Sleep   10
     Click Element  id=save_lot
@@ -1636,8 +1634,7 @@ Login
     etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible      id=info_status    30
     Click Element  id=update_lot_btn
-    Wait Until Element Is Visible      id=addlotform-asset_id    30
-
+    Sleep  5
     ${prop_field_name}=         Replace String    ${fieldname}    .   _    count=1
     Wait Until Element Is Visible       name=AddLotAuctionForm[${auction_index}][${prop_field_name}]   30
 
