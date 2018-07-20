@@ -1516,7 +1516,7 @@ Login
     Wait Until Element Is Visible      id=info_status    30
     Click Element  id=update_lot_btn
     ${prop_field_name}=         Replace String    ${fieldname}    .   _    count=1
-    Wait Until Element Is Visible       name=AddLotForm['${prop_field_name}']   30
+    Wait Until Element Is Visible       name=AddLotForm[${prop_field_name}]   30
     ${field_value}=  Convert To String  ${fieldvalue}
     Input text  name=AddLotForm[${prop_field_name}]  ${fieldvalue}
     Click Element  id=save_lot
