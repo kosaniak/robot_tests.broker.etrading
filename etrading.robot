@@ -507,6 +507,12 @@ Login
     ...  ELSE IF    'items' in '${field_name}'     Отримати інформацію із предмету без індекса  ${field_name}
     ...  ELSE IF    'questions' in '${field_name}'     Отримати інформацію із запитання без індекса  ${field_name}
     ...  ELSE       Отримати інформацію про ${field_name}
+
+
+    ${return_value}=  Run Keyword If
+    ...  'status' in '${field_name}'       convert_etrading_string    ${return_value}
+    ...  ELSE       convert to string    ${return_value}
+
     [Return]  ${return_value}
 
 Отримати інформацію із предмету без індекса

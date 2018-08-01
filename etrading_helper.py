@@ -75,6 +75,7 @@ def convert_etrading_string(string):
             u'Реєстрацію завершено':                                  'complete',
             u'Повідомлення не валідне':                               'pending.deleted',
             u'Аукціон заплановано':                                   'scheduled',
+            u'Мала приватизація':                                     'sellout.english',
             }
     return data.get(string, string)
 
