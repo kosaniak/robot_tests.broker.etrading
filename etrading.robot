@@ -22,6 +22,7 @@ ${locator.description}                               id=info_description
 ${locator.minNumberOfQualifiedBids}                  id=info_minNumberOfQualifiedBids
 ${locator.minimalStep.amount}                        xpath=//td[contains(@id, 'info_minimalStep')]/span[contains(@class, 'amount')]
 ${locator.value.amount}                              xpath=//td[contains(@id, 'info_value')]/span[contains(@class, 'amount')]
+${locator.registrationFee.amount}                    xpath=//td[contains(@id, 'info_registrationFee')]/span[contains(@class, 'amount')]
 ${locator.guarantee.amount}                          xpath=//td[contains(@id, 'info_guarantee')]/span[contains(@class, 'amount')]
 ${locator.value.currency}                            xpath=//td[contains(@id, 'info_value')]/span[contains(@class, 'currency')]
 ${locator.value.valueAddedTaxIncluded}               xpath=//td[contains(@id, 'info_value')]/span[contains(@class, 'tax')]
@@ -507,10 +508,26 @@ Login
     ...  ELSE IF    'items' in '${field_name}'     Отримати інформацію із предмету без індекса  ${field_name}
     ...  ELSE IF    'questions' in '${field_name}'     Отримати інформацію із запитання без індекса  ${field_name}
     ...  ELSE       Отримати інформацію про ${field_name}
+
+
+    ${return_value}=  Run Keyword If
+    ...  'status' in '${field_name}'       convert_etrading_string    ${return_value}
+    ...  ELSE     Set Variable  ${return_value}
+
     [Return]  ${return_value}
 
 Отримати інформацію із предмету без індекса
     [Arguments]  ${field_name}
+    ${prop_field_name}=         Replace String    ${field_name}    .   _    count=1
+    ${prop_field_name}=         Replace String    ${prop_field_name}    .   _    count=1
+    ${return_value}=   Get Text     id=${prop_field_name}
+    ${return_value}=  Run Keyword If
+    ...  'quantity' in '${prop_field_name}'    Convert To Number    ${return_value}
+    ...  ELSE       Convert To String   ${return_value}
+    [Return]  ${return_value}
+
+Отримати інформацію із предмету
+    [Arguments]   ${username}   ${tender_uaid}   ${item_id}   ${field_name}
     ${prop_field_name}=         Replace String    ${field_name}    .   _    count=1
     ${prop_field_name}=         Replace String    ${prop_field_name}    .   _    count=1
     ${return_value}=   Get Text     id=${prop_field_name}
@@ -614,6 +631,11 @@ Login
   ${return_value}=   Отримати текст із поля і показати на сторінці   minimalStep.amount
   ${return_value}=   Convert To Number   ${return_value}
   [Return]   ${return_value}
+
+Отримати інформацію про registrationFee.amount
+  ${return_value}=   Отримати текст із поля і показати на сторінці  registrationFee.amount
+  ${return_value}=   Convert To Number   ${return_value}
+  [Return]  ${return_value}
 
 Внести зміни в тендер
   [Arguments]  ${username}  ${tender_uaid}  ${field_name}  ${field_value}
@@ -1671,4 +1693,6 @@ wait with reload
 
 Активувати процедуру
     [Arguments]  ${username}  ${tender_uaid}
-    etrading.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
+    Go to    ${TESTDOMAIN}/prozorrosale2/auctions/get-all?n=15
+    Sleep   15
+    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
