@@ -1051,7 +1051,6 @@ Login
     [Documentation]
     ...      [Призначення] Створює об’єкт МП з початковими даними tender_data
     ...      [Повертає] tender_uaid (ідентифікатор новоствореного об’єкта МП)
-    log to console  ${tender_data}
     Click Element    id=assets_btn
     Sleep   5
     Click Element    id=addassetsbtn
@@ -1486,7 +1485,6 @@ Login
     etrading.wait with reload  lotlocator  ${fieldname}
     ${return_value}=   Get Text  ${lotlocator.${fieldname}}
 
-
     ${return_value}=  Run Keyword If
     ...  'status' in '${fieldname}'                                   convert_etrading_lot_string  ${return_value}
     ...  ELSE IF    'registrationDetails.status' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
@@ -1686,6 +1684,7 @@ Login
 
 wait with reload
     [Arguments]  ${locator}  ${fieldname}
+    reload page
     :FOR    ${i}    IN RANGE    1   5
     \    ${test}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${${locator}.${fieldname}}    60
     \    Exit For Loop If    ${test}
