@@ -1620,6 +1620,8 @@ Login
     ${guarantee.amount}=                    Get From Dictionary      ${auction.guarantee}        amount
     ${minimalStep.amount}=                  Get From Dictionary      ${auction.minimalStep}      amount
     ${minimalStep.valueAddedTaxIncluded}=   Get From Dictionary      ${auction.minimalStep}      valueAddedTaxIncluded
+    ${minimalStep.valueAddedTaxIncluded}=   Convert To String        ${minimalStep.valueAddedTaxIncluded}
+    ${minimalStep.valueAddedTaxIncluded}=   convert_etrading_string  ${minimalStep.valueAddedTaxIncluded}
     ${registrationFee.amount}=              Get From Dictionary      ${auction.registrationFee}  amount
     ${value.amount}=                        Get From Dictionary      ${auction.value}            amount
     ${value.valueAddedTaxIncluded}=         Get From Dictionary      ${auction.value}            valueAddedTaxIncluded
@@ -1630,11 +1632,12 @@ Login
     ${value.amount}=                        Convert to string     ${value.amount}
     ${auctionPeriod.startDate}=             etrading_convertdate     ${auctionPeriod.startDate}
 
-    Input text    id=addlotauctionform-0-auctionperiod_startdate                    ${auctionPeriod.startDate}
-    Input text    id=addlotauctionform-0-value_amount                               ${value.amount}
-    Input text    id=addlotauctionform-0-minimalstep_amount                         ${minimalStep.amount}
-    Input text    id=addlotauctionform-0-guarantee_amount                           ${guarantee.amount}
-    Input text    id=addlotauctionform-0-registrationfee_amount                     ${registrationFee.amount}
+    Input text          id=addlotauctionform-0-auctionperiod_startdate                           ${auctionPeriod.startDate}
+    Input text          id=addlotauctionform-0-value_amount                                      ${value.amount}
+    Input text          id=addlotauctionform-0-minimalstep_amount                                ${minimalStep.amount}
+    Input text          id=addlotauctionform-0-guarantee_amount                                  ${guarantee.amount}
+    Input text          id=addlotauctionform-0-registrationfee_amount                            ${registrationFee.amount}
+    Select From List    xpath=//select[@id="addlotauctionform-0-value_valueaddedtaxincluded"]    ${minimalStep.valueAddedTaxIncluded}
 
 Додати умови проведення аукціону для індексу 1
     [Arguments]  ${username}  ${auction}  ${auction_index}  ${tender_uaid}
