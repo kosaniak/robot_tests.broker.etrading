@@ -1465,3 +1465,137 @@ wait with reload
     Go to    ${TESTDOMAIN}/prozorrosale2/auctions/get-all?n=15
     Sleep   15
     etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+
+
+######################### Контрактинг #########################
+
+Пошук контракту по ідентифікатору
+    [Arguments]  ${username}  ${contract_uaid}
+    Switch Browser   ${BROWSER_ALIAS}
+    Go to    ${TESTDOMAIN}/prozorrosale2/auctions/get-all-contracts?n=5
+    Sleep   5
+    Go to    ${TESTDOMAIN}/prozorrosale2/auctions/contracts
+    Wait Until Element Is Visible       id=registr2lotssearch-all   15
+    Input text      id=cdb2contractssearch-all    ${contract_uaid}
+    Click Element   id=contracts-search-btn
+    Sleep   2
+    Click Element   xpath=//a[contains(@class, 'show-one-btn')]
+    Wait Until Element Is Visible      id=info_status    15
+
+Активувати контракт
+    #використовується тільки для брокера Квінти, тому його не потрібно реалізовувати, лише додати в драйвер свого майданчика
+    [Arguments]  ${username}  ${contract_uaid}
+    [Documentation]
+    ...      [Призначення] Змінює власника контракту і активує його.
+    Go to    ${TESTDOMAIN}/prozorrosale2/auctions/get-all-contracts?n=15
+    Sleep   15
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
+
+Отримати інформацію із договору
+    [Arguments]  ${username}  ${contract_uaid}  ${fieldname}
+    [Documentation]
+    ...      [Призначення] Отримує значення поля field_name для контракту contract_uaid.
+    ...      [Повертає] field_value - значення поля.
+    etrading.wait with reload  contractlocator  ${fieldname}
+    ${return_value}=   Get Text  ${contractlocator.${fieldname}}
+
+    ${return_value}=  Run Keyword If
+    ...  'status' in '${fieldname}'            convert_etrading_contract_string  ${return_value}
+    ...  ELSE IF    'value' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE       Convert to string  ${return_value}
+
+    [Return]  ${return_value}
+
+Отримати інформацію з активу в договорі
+    [Arguments]  ${username}  ${contract_uaid}  ${item_id}  ${fieldname}
+    [Documentation]
+    ...      [Призначення] Отримує значення поля field_name з активу з item_id контракту contract_uaid.
+    ...      [Повертає] field_value - значення поля.
+    ${return_value}=   Get Text  ${contractitemlocator${item_id}.${fieldname}}
+    ${return_value}=  Run Keyword If
+    ...  'status' in '${fieldname}'                                   convert_etrading_lot_string  ${return_value}
+    ...  ELSE IF    'registrationDetails.status' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
+    ...  ELSE IF    'procurementMethodType' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
+    ...  ELSE IF    'rectificationPeriod.endDate' in '${fieldname}'  convert_etrading_date_to_iso_format_with_tz  ${return_value}
+    ...  ELSE IF    'auctionPeriod' in '${fieldname}'  convert_etrading_date_to_iso_format  ${return_value}
+    ...  ELSE IF    'quantity' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE IF    'tenderAttempts' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE IF    'value' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE IF    'minimalStep' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE IF    'guarantee' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE IF    'registrationFee' in '${fieldname}'  Convert To Number  ${return_value}
+    ...  ELSE       Convert to string  ${return_value}
+
+    ${return_value}=  Run Keyword If
+    ...  'rectificationPeriod.endDate' in '${fieldname}'  add_timezone_to_contact_date  ${return_value}
+
+    [Return]  ${return_value}
+
+Вказати дату отримання оплати
+    [Arguments]  ${username}  ${contract_uaid}  ${dateMet}  ${milestone_index}
+    [Documentation]
+    ...      [Призначення] Вказує дату отримання оплати dateMet в контракті contract_uaid
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
+    Click Element   id=contract-confirm-payment
+    Sleep  5
+    ${date}=    etrading_convertdate    ${dateMet}
+    Input text  id=confirmpaymentform-dateMet  ${date}
+    Click Element   id=contract-confirm-payment-submit
+    Wait Until Page Contains    Договір оплачено. Очікується наказ  20
+
+Підтвердити відсутність оплати
+    [Arguments]  ${username}  ${contract_uaid}  ${milestone_index}
+    [Documentation]
+    ...      [Призначення] Підтверджується відсутність оплати( в перший майлстоун передається статус notMet)
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
+    Click Element   id=contract-no-payment
+    Sleep  5
+    Click Element   id=contract-no-payment-submit
+    Wait Until Page Contains    Приватизація об’єкта неуспішна  20
+
+Завантажити наказ про завершення приватизації
+    [Arguments]  ${username}  ${contract_uaid}  ${filepath}
+    [Documentation]
+    ...      [Призначення] Завантажує документ filepath про завершення приватизації в контракт  contract_uaid.
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
+    Click Element   id=contract-upload-order
+    Sleep  5
+    Choose File     xpath=//input[contains(@id, "contract_upload_field_order")]   ${filepath}
+
+Вказати дату виконання умов контракту
+    [Arguments]  ${username}  ${contract_uaid}  ${dateMet}
+    [Documentation]
+    ...      [Призначення] Вказує дату виконання умов договору dateMet в контракті contract_uaid
+    ${date}=    etrading_convertdate    ${dateMet}
+    Input text  id=contractuploadform-conditionCompleteDateMet  ${date}
+
+Вказати дату прийняття наказу
+    [Arguments]  ${username}  ${contract_uaid}  ${dateMet}
+    [Documentation]
+    ...      [Призначення] Вказує дату прийняття наказу dateMet в контракті contract_uaid
+    ${date}=    etrading_convertdate    ${dateMet}
+    Input text  id=contractuploadform-orderConfirmDateMet  ${date}
+    Click Element   id=contract-upload-order-submit
+    Wait Until Page Contains    Приватизація об’єкта завершена  20
+
+Підтвердити відсутність наказу про приватизацію
+    [Arguments]  ${username}  ${contract_uaid}  ${filepath}
+    [Documentation]
+    ...      [Призначення] Завантажується документ filepath  з типом rejectionProtocol і підтверджується відсутність завантаженого наказу про приватизацію (в другий майлстоун передається статус notMet)
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
+    Click Element   id=contract-no-order
+    Sleep  5
+    Choose File     xpath=//input[contains(@id, "contract_upload_field_rejectionProtocol")]   ${filepath}
+    Click Element   id=contract-no-order-submit
+    Wait Until Page Contains    Приватизація об’єкта неуспішна  20
+
+Підтвердити невиконання умов приватизації
+    [Arguments]  ${username}  ${contract_uaid}
+    [Documentation]
+    ...      [Призначення] В третій майлстоун передається статус notMet(Кнопка в інтерфейсі “Умови продажу не виконано”)
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
+    Click Element   id=contract-not-fulfilled
+    Sleep  5
+    Choose File     xpath=//input[contains(@id, "contract_upload_field_rejectionProtocol")]   ${filepath}
+    Click Element   id=contract-not-fulfilled-submit
+    Wait Until Page Contains    Умови приватизації не виконано  20
