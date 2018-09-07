@@ -46,12 +46,12 @@ def convert_etrading_string(string):
             'False':                                                  '0',
             u"Так":                                                   True,
             u"Hi":                                                    False,
-            u'Очікування пропозицій':                                 'active.tendering',
-            u'Період аукціону':                                       'active.auction',
-            u'Кваліфікація переможця':                                'active.qualification',
-            u'Пропозиції розглянуто':                                 'active.awarded',
+            u'Прийняття заяв на участь':                              'active.tendering',
+            u'Аукціон':                                               'active.auction',
+            u'Очікується опублікування протоколу':                    'active.qualification',
+            u'Очікується підписання договору':                        'active.awarded',
             u'Аукціон не відбувся':                                   'unsuccessful',
-            u'Аукціон завершено':                                     'complete',
+            u'Аукціон відбувся':                                      'complete',
             u'Аукціон відмінено':                                     'cancelled',
             u'Чорновик':                                              'draft',
             u'Майна банків':                                          'dgfOtherAssets',
@@ -63,13 +63,14 @@ def convert_etrading_string(string):
             u'Грн.':                                                  'UAH',
             u'(включно з ПДВ)':                                       True,
             u'(без ПДВ)':                                             False,
-            u'[переможець розглядається кваліфікаційною комісією]':   'pending',
-            u'[Oчікування кінця кваліфікації переможця]':             'pending.waiting',
-            u'[Учасник достроково забрав гарантійний внесок]':        'cancelled',
+            u'[Очікується рішення про викуп]':                        'pending.admission',
+            u'[Очікується протокол]':                                 'pending',
+            u'[Очікується рішення]':                                  'pending.waiting',
+            u'[Відмова від очікування]':                              'cancelled',
             u'[Очікується протокол]':                                 'pending.verification',
             u'[Очікується оплата]':                                   'pending.payment',
-            u'[Оплачено, очікується підписання договору]':            'active',
-            u'[Кваліфікаційна комісія відмовила переможцю]':          'unsuccessful',
+            u'[Переможець]':                                          'active',
+            u'[Рішення скасоване]':                                   'unsuccessful',
             u'Опубліковано. Очікування інформаційного повідомлення.': 'pending',
             u'Виключено з переліку':                                  'deleted',
             u'Реєстрацію завершено':                                  'complete',
@@ -99,6 +100,15 @@ def convert_etrading_lot_auction_string(string):
             }
     return data.get(string, string)
 
+def convert_etrading_contract_string(string):
+    data = {
+            u'Період на внесення оплати':                                         'active.payment',
+            u'Період на завантаження фінального Наказу про приватизацію об’єкту': 'active.approval',
+            u'Період на виконання решти умов контракту':                          'active',
+            u'Неуспішний':                                                        'unsuccessful',
+            u'Відмінений':                                                        'terminated',
+            }
+    return data.get(string, string)
 
 
 
