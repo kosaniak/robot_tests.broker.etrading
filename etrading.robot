@@ -1654,17 +1654,8 @@ wait with reload
     ...      [Повертає] field_value - значення поля.
     ${return_value}=   Get Text  ${lotlocator.items[0].${fieldname}}
     ${return_value}=  Run Keyword If
-    ...  'status' in '${fieldname}'                                   convert_etrading_lot_string  ${return_value}
-    ...  ELSE IF    'registrationDetails.status' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
-    ...  ELSE IF    'procurementMethodType' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
-    ...  ELSE IF    'rectificationPeriod.endDate' in '${fieldname}'  convert_etrading_date_to_iso_format_with_tz  ${return_value}
-    ...  ELSE IF    'auctionPeriod' in '${fieldname}'  convert_etrading_date_to_iso_format  ${return_value}
+    ...  'registrationDetails.status' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
     ...  ELSE IF    'quantity' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'tenderAttempts' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'value' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'minimalStep' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'guarantee' in '${fieldname}'  Convert To Number  ${return_value}
-    ...  ELSE IF    'registrationFee' in '${fieldname}'  Convert To Number  ${return_value}
     ...  ELSE       Convert to string  ${return_value}
 
     [Return]  ${return_value}
