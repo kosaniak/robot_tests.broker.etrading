@@ -1466,16 +1466,157 @@ wait with reload
     Sleep   15
     etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
 
+######################### Кваліфікація #########################
+
+Отримати кількість авардів в тендері
+    [Arguments]  ${username}  ${tender_uaid}
+    [Documentation]
+    ...  [Призначення] Отримує кількість сформованих авардів аукціону tender_uaid.
+    ...  [Повертає] number_of_awards (кількість сформованих авардів).
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    ${return_value}=   Get Text     id=awards_count
+    [Return]  ${return_value}
+
+Завантажити протокол погодження в авард
+    [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+    [Documentation]
+    ...  [Призначення] Завантажує протокол аукціону, який знаходиться по шляху filepath і має documentType = admissionProtocol, до ставки кандидата на кваліфікацію аукціону tender_uaid користувачем username. Ставка, до якої потрібно додавати протокол визначається за award_index.
+    ...  [Повертає] reply (словник з інформацією про документ).
+    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    Wait Until Element Is Visible  id=winner_admission  30
+    Sleep   10
+    Click Element           id=winner_admission
+    Sleep   2
+    Choose File             xpath=//input[contains(@id, 'admissionProtocol_upload_field')]   ${filepath}
+    Click Button           xpath=//button[contains(@id,'submit_admission_form')]
+    Wait Until Page Contains  Опублікувано рішення про викуп  15
+
+Активувати кваліфікацію учасника
+    [Arguments]  ${username}  ${tender_uaid}
+    [Documentation]
+    ...  [Призначення] Переводить кандидата аукціону tender_uaid в статус pending під час admissionPeriod.
+    ...  [Повертає] reply (словник з інформацією про кандидата).
+    ### Операція зміни статусу та завантаження виконується в одну дію в попередньому кейворді
+    No Operation
+
+Завантажити протокол аукціону в авард
+    [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    sleep  5
+    Click Element           id=upload_owner_protocol_and_contract
+    sleep  5
+    Choose File             xpath=//input[contains(@id, "award_doc_upload_field_auctionProtocol")]   ${filepath}
+    Click Element           id=submit_owner_add_protocol
+    Wait Until Page Contains  Протокол завантажено успішно  15
+
+Підтвердити постачальника
+    [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    :FOR    ${i}    IN RANGE    1   5
+    \    ${test}=   Wait Until Element Is Visible     id=cwalificate_winer_btn    30
+    \    Exit For Loop If    ${test}
+    \    reload page
+    Click Element     id=cwalificate_winer_btn
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    Wait Until Page Contains  Переможець  15
+
+Завантажити протокол дискваліфікації в авард
+    [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+    [Documentation]
+    ...  [Призначення] Завантажує протокол дискваліфікації, який знаходиться по шляху filepath і має documentType = act/rejectionProtocol, до ставки кандидата на кваліфікацію аукціону tender_uaid користувачем username. Ставка, до якої потрібно додавати протокол визначається за award_index.
+    ...  [Повертає] reply (словник з інформацією про документ).
+    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  id=rejectionProtocol_upload  30
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    Wait Until Element Is Visible  id=rejectionProtocol_upload  30
+    Sleep  5
+    Click Element           id=rejectionProtocol_upload
+    Sleep  2
+    Choose File            xpath=//input[contains(@id, 'rejectionProtocol_upload_field')]   ${filepath}
+    Click Button           xpath=//button[contains(@id,'rejectionProtocol_upload_submit')]
+    Wait Until Page Contains  Рішення про відмову у затвердженні протоколу опубліковано  15
+
+Дискваліфікувати постачальника
+    [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
+    ### Операція зміни статусу та завантаження виконується в одну дію в попередньому кейворді
+    No Operation
+
+Скасування рішення кваліфікаційної комісії
+    [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+    etrading.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    Sleep  5
+    Click Element                         xpath=//a[contains(@id, "refuse_btn")]
+    Wait Until Page Contains   Ви успішно відмовились від участі в кваліфікації переможців   10
+
+Завантажити протокол скасування в контракт
+    [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${contract_num}
+    [Documentation]
+    ...  [Призначення] Завантажує до контракту contract_num аукціону tender_uaid документ, який знаходиться по шляху filepath і має documentType = act/rejectionProtocol, користувачем username.
+    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  id=contract_rejectionProtocol_upload  30
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    sleep  5
+    Capture Page Screenshot
+    Click Element           id=contract_rejectionProtocol_upload
+    Sleep  5
+    Choose File            xpath=//input[contains(@id, 'contract_rejectionProtocol_upload_field')]   ${filepath}
+    Click Button           xpath=//button[contains(@id,'contract_rejectionProtocol_upload_submit')]
+    Wait Until Page Contains  Рішення про скасування контракту опубліковано  15
+
+Скасувати контракт
+    [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
+    [Documentation]
+    ...  [Призначення] Переводить договір під номером contract_num до аукціону tender_uaid в статус cancelled.
+    ### Операція зміни статусу та завантаження виконується в одну дію в попередньому кейворді
+    No Operation
+
+Завантажити угоду до тендера
+    [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
+    [Documentation]
+    ...  [Призначення] Завантажує до контракту contract_num аукціону tender_uaid документ, який знаходиться по шляху filepath і має documentType = contractSigned, користувачем username.
+    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element     id=add_contract_docs
+    Sleep   2
+    Choose File            xpath=//input[contains(@id, 'contract_doc_upload_fieldcontractSigned')]   ${filepath}
+    Click Button           xpath=//button[contains(@id,'submit_add_contract_form')]
+    Wait Until Page Contains  Збережено документи договору аукціону  15
+
+Встановити дату підписання угоди
+    [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${fieldvalue}
+    [Documentation]
+    ...  [Призначення] Встановлює в договорі під номером contract_num аукціону tender_uaid дату підписання контракту зі значенням fieldvalue.
+    etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    Sleep  5
+    Click Element     id=signed_contract_btn
+    Wait Until Element Is Visible  id=addsignform-datesigned  30
+    ${fieldvalue}=  etrading_convertdate  ${fieldvalue}
+    Input Text  xpath=//input[contains(@id,"addsignform-datesigned")]  ${fieldvalue}
+    Capture Page Screenshot
+    Click Button     id=submit_sign_contract
+    Wait Until Page Contains  Договір підписано успішно  10
+
+Підтвердити підписання контракту
+    [Documentation]
+    ...      [Arguments] Username, tender uaid, contract number
+    ...      [Return] Nothing
+    [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
+    ### Операція зміни статусу та завантаження виконується в одну дію в попередньому кейворді
+    No Operation
+
 
 ######################### Контрактинг #########################
 
 Пошук контракту по ідентифікатору
     [Arguments]  ${username}  ${contract_uaid}
     Switch Browser   ${BROWSER_ALIAS}
-    Go to    ${TESTDOMAIN}/prozorrosale2/auctions/get-all-contracts?n=5
-    Sleep   5
+    Go to    ${TESTDOMAIN}/prozorrosale2/auctions/get-all-contracts?n=15
+    Sleep   15
     Go to    ${TESTDOMAIN}/prozorrosale2/auctions/contracts
-    Wait Until Element Is Visible       id=registr2lotssearch-all   15
+    Wait Until Element Is Visible       id=cdb2contractssearch-all   15
     Input text      id=cdb2contractssearch-all    ${contract_uaid}
     Click Element   id=contracts-search-btn
     Sleep   2
@@ -1497,7 +1638,7 @@ wait with reload
     ...      [Призначення] Отримує значення поля field_name для контракту contract_uaid.
     ...      [Повертає] field_value - значення поля.
     etrading.wait with reload  contractlocator  ${fieldname}
-    ${return_value}=   Get Text  ${contractlocator.${fieldname}}
+    ${return_value}=   Get Text  id=info_${fieldname}
 
     ${return_value}=  Run Keyword If
     ...  'status' in '${fieldname}'            convert_etrading_contract_string  ${return_value}
@@ -1511,7 +1652,7 @@ wait with reload
     [Documentation]
     ...      [Призначення] Отримує значення поля field_name з активу з item_id контракту contract_uaid.
     ...      [Повертає] field_value - значення поля.
-    ${return_value}=   Get Text  ${contractitemlocator${item_id}.${fieldname}}
+    ${return_value}=   Get Text  ${lotlocator.items[0].${fieldname}}
     ${return_value}=  Run Keyword If
     ...  'status' in '${fieldname}'                                   convert_etrading_lot_string  ${return_value}
     ...  ELSE IF    'registrationDetails.status' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
@@ -1526,9 +1667,6 @@ wait with reload
     ...  ELSE IF    'registrationFee' in '${fieldname}'  Convert To Number  ${return_value}
     ...  ELSE       Convert to string  ${return_value}
 
-    ${return_value}=  Run Keyword If
-    ...  'rectificationPeriod.endDate' in '${fieldname}'  add_timezone_to_contact_date  ${return_value}
-
     [Return]  ${return_value}
 
 Вказати дату отримання оплати
@@ -1539,9 +1677,9 @@ wait with reload
     Click Element   id=contract-confirm-payment
     Sleep  5
     ${date}=    etrading_convertdate    ${dateMet}
-    Input text  id=confirmpaymentform-dateMet  ${date}
+    Input text  id=contractconfirmpaymentform-datemet  ${date}
     Click Element   id=contract-confirm-payment-submit
-    Wait Until Page Contains    Договір оплачено. Очікується наказ  20
+    Wait Until Page Contains    Дату оплати договору збережено успішно  20
 
 Підтвердити відсутність оплати
     [Arguments]  ${username}  ${contract_uaid}  ${milestone_index}
@@ -1562,19 +1700,12 @@ wait with reload
     Sleep  5
     Choose File     xpath=//input[contains(@id, "contract_upload_field_order")]   ${filepath}
 
-Вказати дату виконання умов контракту
-    [Arguments]  ${username}  ${contract_uaid}  ${dateMet}
-    [Documentation]
-    ...      [Призначення] Вказує дату виконання умов договору dateMet в контракті contract_uaid
-    ${date}=    etrading_convertdate    ${dateMet}
-    Input text  id=contractuploadform-conditionCompleteDateMet  ${date}
-
 Вказати дату прийняття наказу
     [Arguments]  ${username}  ${contract_uaid}  ${dateMet}
     [Documentation]
     ...      [Призначення] Вказує дату прийняття наказу dateMet в контракті contract_uaid
     ${date}=    etrading_convertdate    ${dateMet}
-    Input text  id=contractuploadform-orderConfirmDateMet  ${date}
+    Input text  id=contractuploadorderform-orderconfirmdatemet  ${date}
     Click Element   id=contract-upload-order-submit
     Wait Until Page Contains    Приватизація об’єкта завершена  20
 
@@ -1589,6 +1720,18 @@ wait with reload
     Click Element   id=contract-no-order-submit
     Wait Until Page Contains    Приватизація об’єкта неуспішна  20
 
+Вказати дату виконання умов контракту
+    [Arguments]  ${username}  ${contract_uaid}  ${dateMet}
+    [Documentation]
+    ...      [Призначення] Вказує дату виконання умов договору dateMet в контракті contract_uaid
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
+    Click Element   id=contract-fulfilled
+    Sleep  5
+    ${date}=    etrading_convertdate    ${dateMet}
+    Input text  id=contractfulfilledform-datemet  ${date}
+    Click Element   id=contract-fulfilled-submit
+    Wait Until Page Contains    Статус про виконання умов продажу збережено успішно  20
+
 Підтвердити невиконання умов приватизації
     [Arguments]  ${username}  ${contract_uaid}
     [Documentation]
@@ -1596,6 +1739,6 @@ wait with reload
     etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
     Click Element   id=contract-not-fulfilled
     Sleep  5
-    Choose File     xpath=//input[contains(@id, "contract_upload_field_rejectionProtocol")]   ${filepath}
+    Choose File     xpath=//input[contains(@id, "contract_notfullfiled_rejectionProtocol")]   ${filepath}
     Click Element   id=contract-not-fulfilled-submit
     Wait Until Page Contains    Умови приватизації не виконано  20
