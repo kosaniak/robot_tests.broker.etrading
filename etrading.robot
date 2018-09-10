@@ -1475,6 +1475,7 @@ wait with reload
     ...  [Повертає] number_of_awards (кількість сформованих авардів).
     Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
     ${return_value}=   Get Text     id=awards_count
+    ${return_value}=   Convert To Number   ${return_value}
     [Return]  ${return_value}
 
 Завантажити протокол погодження в авард
