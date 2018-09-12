@@ -1638,6 +1638,7 @@ wait with reload
     [Documentation]
     ...      [Призначення] Отримує значення поля field_name для контракту contract_uaid.
     ...      [Повертає] field_value - значення поля.
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
     etrading.wait with reload  contractlocator  ${fieldname}
     ${return_value}=   Get Text  id=info_${fieldname}
 
@@ -1653,6 +1654,7 @@ wait with reload
     [Documentation]
     ...      [Призначення] Отримує значення поля field_name з активу з item_id контракту contract_uaid.
     ...      [Повертає] field_value - значення поля.
+    etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
     ${return_value}=   Get Text  ${lotlocator.items[0].${fieldname}}
     ${return_value}=  Run Keyword If
     ...  'registrationDetails.status' in '${fieldname}'    convert_etrading_lot_string  ${return_value}
