@@ -1579,6 +1579,8 @@ wait with reload
     [Documentation]
     ...  [Призначення] Завантажує до контракту contract_num аукціону tender_uaid документ, який знаходиться по шляху filepath і має documentType = contractSigned, користувачем username.
     etrading.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    Execute Javascript  $('html, body').animate({scrollTop: $("#awards_count").offset().top}, 100);
+    Sleep   2
     Click Element     id=add_contract_docs
     Sleep   2
     Choose File            xpath=//input[contains(@id, 'contract_doc_upload_fieldcontractSigned')]   ${filepath}
@@ -1683,7 +1685,7 @@ wait with reload
     Click Element   id=contract-no-payment
     Sleep  5
     Click Element   id=contract-no-payment-submit
-    Wait Until Page Contains    Приватизація об’єкта неуспішна  20
+    Wait Until Page Contains    Статус відсутності оплати збережено успішно   20
 
 Завантажити наказ про завершення приватизації
     [Arguments]  ${username}  ${contract_uaid}  ${filepath}
@@ -1712,7 +1714,7 @@ wait with reload
     Sleep  5
     Choose File     xpath=//input[contains(@id, "contract_upload_field_rejectionProtocol")]   ${filepath}
     Click Element   id=contract-no-order-submit
-    Wait Until Page Contains    Приватизація об’єкта неуспішна  20
+    Wait Until Page Contains    Статус відсутності наказу про завершення приватизації збережено успішно  20
 
 Вказати дату виконання умов контракту
     [Arguments]  ${username}  ${contract_uaid}  ${dateMet}
@@ -1733,6 +1735,5 @@ wait with reload
     etrading.Пошук контракту по ідентифікатору  ${username}  ${contract_uaid}
     Click Element   id=contract-not-fulfilled
     Sleep  5
-    Choose File     xpath=//input[contains(@id, "contract_notfullfiled_rejectionProtocol")]   ${filepath}
     Click Element   id=contract-not-fulfilled-submit
     Wait Until Page Contains    Умови приватизації не виконано  20
